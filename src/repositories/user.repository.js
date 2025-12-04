@@ -1,31 +1,33 @@
-import { PrismaClient } from "@prisma/client";
-const prisma = new PrismaClient();
+import { User } from "../models/index.js";
 
 export class UserRepository {
   async create(data) {
-    return prisma.user.create({ data });
+    return await User.create(data);
   }
 
   async findById(id) {
-    return prisma.user.findUnique({ where: { id } });
+    return await User.findByPk(id);
   }
 
   async findByEmail(email) {
-    return prisma.user.findUnique({ where: { email } });
+    return await User.findOne({ where: { email } });
   }
 
   async findAll() {
-    return prisma.user.findMany();
+    return await User.findAll();
   }
 
   async update(id, data) {
-    return prisma.user.update({
-      where: { id },
-      data,
-    });
+    const user = await User.findByPk(id);
+    if (!user) return null;
+    await user.update(data);
+    return user;
   }
 
   async delete(id) {
-    return prisma.user.delete({ where: { id } });
+    const user = await User.findByPk(id);
+    if (!user) return null;
+    await user.destroy();
+    return user;
   }
 }

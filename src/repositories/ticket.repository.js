@@ -1,48 +1,48 @@
-import { PrismaClient } from "@prisma/client";
-const prisma = new PrismaClient();
+import { Ticket, User, Category, Message } from "../models/index.js";
 
 export class TicketRepository {
   async create(data) {
-    return prisma.ticket.create({
-      data,
-      include: {
-        user: true,
-        agent: true,
-        category: true,
-      },
+    return await Ticket.create(data, {
+      include: [
+        { model: User, as: "user" },
+        { model: User, as: "agent" },
+        { model: Category, as: "category" },
+      ],
     });
   }
 
   async findById(id) {
-    return prisma.ticket.findUnique({
-      where: { id },
-      include: {
-        user: true,
-        agent: true,
-        messages: true,
-        category: true,
-      },
+    return await Ticket.findByPk(id, {
+      include: [
+        { model: User, as: "user" },
+        { model: User, as: "agent" },
+        { model: Message, as: "messages" },
+        { model: Category, as: "category" },
+      ],
     });
   }
 
   async findAll() {
-    return prisma.ticket.findMany({
-      include: {
-        user: true,
-        agent: true,
-        category: true,
-      },
+    return await Ticket.findAll({
+      include: [
+        { model: User, as: "user" },
+        { model: User, as: "agent" },
+        { model: Category, as: "category" },
+      ],
     });
   }
 
   async update(id, data) {
-    return prisma.ticket.update({
-      where: { id },
-      data,
-    });
+    const ticket = await Ticket.findByPk(id);
+    if (!ticket) return null;
+    await ticket.update(data);
+    return ticket;
   }
 
   async delete(id) {
-    return prisma.ticket.delete({ where: { id } });
+    const ticket = await Ticket.findByPk(id);
+    if (!ticket) return null;
+    await ticket.destroy();
+    return ticket;
   }
 }

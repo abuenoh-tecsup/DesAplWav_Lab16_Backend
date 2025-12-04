@@ -1,37 +1,37 @@
-import { PrismaClient } from "@prisma/client";
-const prisma = new PrismaClient();
+import { Message, Ticket, User } from "../models/index.js";
 
 export class MessageRepository {
   async create(data) {
-    return prisma.message.create({
-      data,
-      include: {
-        ticket: true,
-        author: true,
-      },
+    return await Message.create(data, {
+      include: [
+        { model: Ticket, as: "ticket" },
+        { model: User, as: "author" },
+      ],
     });
   }
 
   async findById(id) {
-    return prisma.message.findUnique({
-      where: { id },
-      include: {
-        ticket: true,
-        author: true,
-      },
+    return await Message.findByPk(id, {
+      include: [
+        { model: Ticket, as: "ticket" },
+        { model: User, as: "author" },
+      ],
     });
   }
 
   async findByTicket(ticketId) {
-    return prisma.message.findMany({
+    return await Message.findAll({
       where: { ticketId },
-      include: {
-        author: true,
-      },
+      include: [
+        { model: User, as: "author" }
+      ],
     });
   }
 
   async delete(id) {
-    return prisma.message.delete({ where: { id } });
+    const message = await Message.findByPk(id);
+    if (!message) return null;
+    await message.destroy();
+    return message;
   }
 }

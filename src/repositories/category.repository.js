@@ -1,27 +1,28 @@
-import { PrismaClient } from "@prisma/client";
-const prisma = new PrismaClient();
+import { Category } from "../models/index.js";
 
 export class CategoryRepository {
   async create(data) {
-    return prisma.category.create({ data });
+    return await Category.create(data);
   }
 
   async findById(id) {
-    return prisma.category.findUnique({ where: { id } });
+    return await Category.findByPk(id);
   }
 
   async findAll() {
-    return prisma.category.findMany();
+    return await Category.findAll();
   }
 
   async update(id, data) {
-    return prisma.category.update({
-      where: { id },
-      data,
-    });
+    const category = await Category.findByPk(id);
+    if (!category) return null;
+    return await category.update(data);
   }
 
   async delete(id) {
-    return prisma.category.delete({ where: { id } });
+    const category = await Category.findByPk(id);
+    if (!category) return null;
+    await category.destroy();
+    return category;
   }
 }
