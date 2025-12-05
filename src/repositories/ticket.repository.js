@@ -2,22 +2,17 @@ import { Ticket, User, Category, Message } from "../models/index.js";
 
 export class TicketRepository {
   async create(data) {
-    return await Ticket.create(data, {
-      include: [
-        { model: User, as: "user" },
-        { model: User, as: "agent" },
-        { model: Category, as: "category" },
-      ],
-    });
+    // No hace falta include aquí; solo usamos los IDs
+    return await Ticket.create(data);
   }
 
   async findById(id) {
     return await Ticket.findByPk(id, {
       include: [
-        { model: User, as: "user" },
-        { model: User, as: "agent" },
-        { model: Message, as: "messages" },
-        { model: Category, as: "category" },
+        { model: User, as: "user" },      // alias correcto
+        { model: User, as: "agent" },     // alias correcto
+        { model: Category },               // sin alias, porque así lo definiste
+        { model: Message }                 // sin alias
       ],
     });
   }
@@ -27,7 +22,7 @@ export class TicketRepository {
       include: [
         { model: User, as: "user" },
         { model: User, as: "agent" },
-        { model: Category, as: "category" },
+        { model: Category },               // sin alias
       ],
     });
   }

@@ -5,6 +5,8 @@ import morgan from "morgan";
 
 import authRoutes from "./routes/auth.routes.js";
 import userRoutes from "./routes/user.routes.js";
+import ticketRoutes from "./routes/ticket.routes.js";
+import categoryRoutes from "./routes/category.routes.js";
 
 // Importar y sincronizar Sequelize
 import { syncDB } from "./models/index.js";
@@ -21,6 +23,8 @@ app.use(morgan("dev"));
 // Rutas
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
+app.use("/api/tickets", ticketRoutes);
+app.use("/api/categories", categoryRoutes);
 
 // Healthcheck
 app.get("/health", (req, res) => res.status(200).json({ ok: true }));
