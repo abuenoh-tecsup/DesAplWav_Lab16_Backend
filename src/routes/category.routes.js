@@ -1,14 +1,16 @@
 // routes/category.routes.js
 import express from "express";
 import categoryController from "../controllers/category.controller.js";
+import authenticate from "../middlewares/authenticate.js";
+import authorize from "../middlewares/authorize.js";
 
 const router = express.Router();
 
-// CRUD de categorías
-router.get("/", categoryController.getAll);          // Obtener todas las categorías
-router.get("/:id", categoryController.getById);     // Obtener categoría por id
-router.post("/", categoryController.create);        // Crear nueva categoría
-router.patch("/:id", categoryController.update);    // Actualizar categoría
-router.delete("/:id", categoryController.delete);   // Eliminar categoría
+router.get("/", authenticate, categoryController.getAll);
+router.get("/:id", authenticate, categoryController.getById);
+
+router.post("/", authenticate, authorize(["ADMIN"]), categoryController.create);
+router.patch("/:id", authenticate, authorize(["ADMIN"]), categoryController.update);
+router.delete("/:id", authenticate, authorize(["ADMIN"]), categoryController.delete);
 
 export default router;

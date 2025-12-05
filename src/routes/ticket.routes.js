@@ -1,17 +1,19 @@
 import express from "express";
 import ticketController from "../controllers/ticket.controller.js";
+import authenticate from "../middlewares/authenticate.js";
+import authorize from "../middlewares/authorize.js";
 
 const router = express.Router();
 
 // CRUD básico
-router.get("/", ticketController.getAll);
-router.get("/:id", ticketController.getById);
-router.post("/", ticketController.create);
-router.patch("/:id", ticketController.update);
-router.delete("/:id", ticketController.delete);
+router.get("/", authenticate, authorize(["AGENT", "ADMIN"]), ticketController.getAll);
+router.get("/:id", authenticate, authorize([]), ticketController.getById);
+router.post("/", authenticate, authorize([]), ticketController.create);
+router.patch("/:id", authenticate, authorize(["AGENT", "ADMIN"]), ticketController.update);
+router.delete("/:id", authenticate, authorize(["ADMIN"]), ticketController.delete);
 
 // Mensajes de tickets
-router.post("/:id/messages", ticketController.addMessage);
-router.get("/:id/messages", ticketController.getMessages);
+router.post("/:id/messages", authenticate, authorize([]), ticketController.addMessage);
+router.get("/:id/messages", authenticate, authorize([]), ticketController.getMessages);
 
 export default router;

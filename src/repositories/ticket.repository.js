@@ -17,15 +17,17 @@ export class TicketRepository {
     });
   }
 
-  async findAll() {
+  async findAll(options = {}) {
     return await Ticket.findAll({
+      where: options.where ?? {},
       include: [
         { model: User, as: "user" },
         { model: User, as: "agent" },
-        { model: Category },               // sin alias
+        { model: Category },
       ],
     });
   }
+
 
   async update(id, data) {
     const ticket = await Ticket.findByPk(id);
