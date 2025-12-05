@@ -9,7 +9,7 @@ const syncDB = async () => {
     await sequelize.authenticate();
     console.log("Conexión a DB correcta");
     
-    await sequelize.sync({ alter: true }); // crea tablas según los modelos
+    await sequelize.sync(); // crea tablas según los modelos
     console.log("Tablas sincronizadas");
   } catch (error) {
     console.error("Error DB:", error);

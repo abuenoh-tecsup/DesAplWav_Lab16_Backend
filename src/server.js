@@ -9,15 +9,23 @@ import userRoutes from "./routes/user.routes.js";
 import ticketRoutes from "./routes/ticket.routes.js";
 import categoryRoutes from "./routes/category.routes.js";
 
-// Importar y sincronizar Sequelize
 import { syncDB } from "./models/index.js";
 
 dotenv.config();
 
 const app = express();
 
+// --- CORS CONFIG ---
+app.use(
+  cors({
+    origin: process.env.CLIENT_URL,
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  })
+);
+
 // Middlewares
-app.use(cors());
 app.use(express.json());
 app.use(morgan("dev"));
 app.use(cookieParser());
@@ -31,20 +39,20 @@ app.use("/api/categories", categoryRoutes);
 // Healthcheck
 app.get("/health", (req, res) => res.status(200).json({ ok: true }));
 
-// Manejador global de errores
+// Handler global de errores
 app.use((err, req, res, next) => {
   console.error(err);
-  res
-    .status(err.status || 500)
-    .json({ message: err.message || "Error interno del servidor" });
+  res.status(err.status || 500).json({
+    message: err.message || "Error interno del servidor",
+  });
 });
 
-// Sincronizar DB y levantar servidor
-const PORT = process.env.PORT || 3000;
+// Server
+const PORT = process.env.PORT || 4000;
 
 const startServer = async () => {
   try {
-    await syncDB(); // Conexión y sincronización de tablas
+    await syncDB();
     app.listen(PORT, () =>
       console.log(`Servidor corriendo en puerto ${PORT}`)
     );
