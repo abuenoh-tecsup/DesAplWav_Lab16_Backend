@@ -34,7 +34,7 @@ class AuthController {
         maxAge: 1000 * 60 * 60, // 1 hora, ajustar según necesidad
       });
 
-      return res.status(200).json({ message: "Inicio de sesión exitoso" });
+      return res.status(200).json({ message: "Inicio de sesión exitoso", token });
     } catch (err) {
       next(err);
     }
