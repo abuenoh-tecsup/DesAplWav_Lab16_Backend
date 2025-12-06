@@ -2,10 +2,10 @@ import { Message, Ticket, User } from "../models/index.js";
 
 export class MessageRepository {
   async create(data) {
+    // No necesitas incluir Ticket al crear, porque ya tienes ticketId
     return await Message.create(data, {
       include: [
-        { model: Ticket, as: "ticket" },
-        { model: User, as: "author" },
+        { model: User, as: "author" }, // solo incluir el author si quieres que venga anidado
       ],
     });
   }
@@ -13,8 +13,8 @@ export class MessageRepository {
   async findById(id) {
     return await Message.findByPk(id, {
       include: [
-        { model: Ticket, as: "ticket" },
-        { model: User, as: "author" },
+        { model: Ticket },             // coincide con la relación definida sin alias
+        { model: User, as: "author" }, // coincide con el alias "author"
       ],
     });
   }
@@ -23,7 +23,7 @@ export class MessageRepository {
     return await Message.findAll({
       where: { ticketId },
       include: [
-        { model: User, as: "author" }
+        { model: User, as: "author" }  // solo el autor
       ],
     });
   }
