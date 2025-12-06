@@ -6,7 +6,7 @@ import authorize from "../middlewares/authorize.js";
 const router = express.Router();
 
 // CRUD básico
-router.get("/", authenticate, authorize(["AGENT", "ADMIN"]), ticketController.getAll);
+router.get("/", authenticate, authorize([]), ticketController.getAll);
 router.get("/:id", authenticate, authorize([]), ticketController.getById);
 router.post("/", authenticate, authorize([]), ticketController.create);
 router.patch("/:id", authenticate, authorize(["AGENT", "ADMIN"]), ticketController.update);
