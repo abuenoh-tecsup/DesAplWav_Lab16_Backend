@@ -12,14 +12,20 @@ const messageRepo = new MessageRepository();
 class TicketService {
     // ------------------- CRUD -------------------
     async getAll({ userId, role }) {
-        if (role === "ADMIN" || role === "AGENT") {
+        if (role === "ADMIN") {
+            // Admin ve todos los tickets
             return await ticketRepo.findAll();
+        } else if (role === "AGENT") {
+            // Solo tickets asignados a este agente
+            return await ticketRepo.findAll({ where: { agentId: userId } });
         } else if (role === "USER") {
+            // Solo tickets creados por el usuario
             return await ticketRepo.findAll({ where: { userId } });
         } else {
             throw Object.assign(new Error("Rol inválido"), { status: 403 });
         }
     }
+
 
     async getById(id, { userId, role }) {
         const ticket = await ticketRepo.findById(id);
