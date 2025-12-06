@@ -150,7 +150,7 @@ class TicketService {
     }
 
     // ------------------- Mensajes -------------------
-    async addMessage(ticketId, authorId, content) {
+    async addMessage(ticketId, { authorId, content }) {
         const ticket = await this.getById(ticketId);
         const author = await userRepo.findById(authorId);
         if (!author) throw Object.assign(new Error("Autor no encontrado"), { status: 404 });
