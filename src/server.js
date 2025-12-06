@@ -18,6 +18,7 @@ const app = express();
 // --- CORS CONFIG ---
 const allowedOrigins = [
   "http://localhost:3000", // Desarrollo local
+  "https://des-apl-wav-lab16-frontend.vercel.app",
   process.env.CLIENT_URL    // Producción / deployment
 ].filter(Boolean); // Filtra cualquier valor undefined
 
