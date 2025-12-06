@@ -2,13 +2,12 @@ import { Message, Ticket, User } from "../models/index.js";
 
 export class MessageRepository {
   async create(data) {
-    // No necesitas incluir Ticket al crear, porque ya tienes ticketId
-    return await Message.create(data, {
-      include: [
-        { model: User, as: "author" }, // solo incluir el author si quieres que venga anidado
-      ],
+    const message = await Message.create(data);
+    return await Message.findByPk(message.id, {
+      include: [{ model: User, as: "author" }],
     });
   }
+
 
   async findById(id) {
     return await Message.findByPk(id, {
