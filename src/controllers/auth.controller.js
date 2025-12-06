@@ -26,15 +26,15 @@ class AuthController {
 
       const { token } = await authService.signIn({ email, password });
 
-      // Enviar token en cookie httpOnly
+      // Cookie correcta para Vercel + Render
       res.cookie("token", token, {
         httpOnly: true,
-        secure: process.env.NODE_ENV === "production", // HTTPS solo en prod
-        sameSite: "strict",
-        maxAge: 1000 * 60 * 60, // 1 hora, ajustar según necesidad
+        secure: true,        // HTTPS obligatorio en Render
+        sameSite: "none",    // IMPORTANTE para evitar bloqueos
+        maxAge: 1000 * 60 * 60,
       });
 
-      return res.status(200).json({ message: "Inicio de sesión exitoso", token });
+      return res.status(200).json({ message: "Inicio de sesión exitoso" });
     } catch (err) {
       next(err);
     }
@@ -42,17 +42,18 @@ class AuthController {
 
   async signOut(req, res, next) {
     try {
-      // Limpiar la cookie httpOnly
       res.clearCookie("token", {
         httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: "strict",
+        secure: true,
+        sameSite: "none",
       });
+
       return res.status(200).json({ message: "Cierre de sesión exitoso" });
     } catch (err) {
       next(err);
     }
   }
+
 }
 
 export default new AuthController();
