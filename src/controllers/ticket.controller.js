@@ -63,20 +63,24 @@ class TicketController {
     // ------------------- Mensajes -------------------
     async addMessage(req, res, next) {
         try {
-            const { authorId, content } = req.body;
+            const { content } = req.body;
+            const authorId = req.userId;
 
-            if (!authorId || !content) {
+            if (!content) {
                 return res.status(400).json({
-                    message: "Campos obligatorios: authorId, content",
+                    message: "El contenido del mensaje es obligatorio",
                 });
             }
 
-            const message = await ticketService.addMessage(req.params.id, authorId, content);
+            // Llamamos al service pasando el authorId y content
+            const message = await ticketService.addMessage(req.params.id, { authorId, content });
+
             res.status(201).json(message);
         } catch (err) {
             next(err);
         }
     }
+
 
     async getMessages(req, res, next) {
         try {
