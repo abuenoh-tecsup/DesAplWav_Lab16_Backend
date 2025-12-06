@@ -16,9 +16,14 @@ dotenv.config();
 const app = express();
 
 // --- CORS CONFIG ---
+const allowedOrigins = [
+  "http://localhost:3000", // Desarrollo local
+  process.env.CLIENT_URL    // Producción / deployment
+].filter(Boolean); // Filtra cualquier valor undefined
+
 app.use(
   cors({
-    origin: process.env.CLIENT_URL,
+    origin: allowedOrigins,
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
     allowedHeaders: ["Content-Type", "Authorization"],
